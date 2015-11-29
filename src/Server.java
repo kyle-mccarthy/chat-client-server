@@ -39,7 +39,13 @@ public class Server
     public void run() throws IOException
     {
         this.listener = new ServerSocket(this.port);
-
+        try {
+            while (true) {
+                new Handler(this.listener.accept(), clientCount++).start();
+            }
+        } finally {
+            this.listener.close();
+        }
     }
 
     private static class Handler extends Thread
