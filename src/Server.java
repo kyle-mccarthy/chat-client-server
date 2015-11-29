@@ -52,6 +52,16 @@ public class Server
         }
     }
 
+    public static void main (String[] args)
+    {
+        Server server = new Server(17388);
+        try {
+            server.run();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static class Handler extends Thread
     {
         protected Socket socket;
@@ -60,7 +70,7 @@ public class Server
         protected PrintWriter output;
 
         /**
-         *
+         * Thread to handle the requests from a client application to the server.
          * @param socket - Socket from the server object
          * @param id - int - ID of the client running on the handler
          */

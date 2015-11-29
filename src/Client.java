@@ -36,4 +36,14 @@ public class Client
         this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         this.output = new PrintWriter(this.socket.getOutputStream(), true);
     }
+
+    public static void main (String[] args)
+    {
+        Client client = new Client(17388);
+        try {
+            client.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
