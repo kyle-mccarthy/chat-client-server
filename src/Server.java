@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.net.ServerSocket;
+
 /**
  * Student: Kyle McCarthy
  * Student ID: 1807388
@@ -7,7 +10,30 @@
 
 public class Server
 {
-    private static class Handler extends Thread {
-        
+    protected int port;
+    protected ServerSocket listener;
+    protected int clientCount;
+    protected int version;
+
+    public Server(int port)
+    {
+        this.port = port;
+        this.clientCount = 0;
+        this.version = 2;
+    }
+
+    protected String getServerHeader()
+    {
+        return "My chat room.  Version " + this.version;
+    }
+
+    public void run() throws IOException
+    {
+
+    }
+
+    private static class Handler extends Thread
+    {
+
     }
 }
