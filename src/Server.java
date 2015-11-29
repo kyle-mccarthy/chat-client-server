@@ -1,4 +1,7 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -52,6 +55,8 @@ public class Server
     {
         protected Socket socket;
         protected int clientID;
+        protected BufferedReader input;
+        protected PrintWriter output;
 
         /**
          *
@@ -62,6 +67,34 @@ public class Server
         {
             this.socket = socket;
             this.clientID = id;
+        }
+
+        /**
+         * Controls the thread for a client, allows for client to input a string that is then sent to the server.
+         */
+        public void run()
+        {
+            try {
+                // create the BufferedReader and PrintWriter for input and output respectively
+                this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+                this.output = new PrintWriter(this.socket.getOutputStream(), true);
+
+                while (true) {
+                    // @todo get the current line and process the commands
+                    this.output.println(this.input.readLine());
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                // try to close the connection between handler and server
+                try {
+                    this.socket.close();
+                    System.out.print("Connection with client closed.");
+                } catch (IOException e) {
+                    this.output.println("Error: could not close the socket.");
+                }
+            }
         }
     }
 }
