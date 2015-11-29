@@ -7,6 +7,7 @@
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -29,7 +30,10 @@ public class Client
         this.address = "127.0.0.1";
     }
 
-    public void connect() throws IOException {
-
+    public void connect() throws IOException
+    {
+        this.socket = new Socket(this.address, this.port);
+        this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+        this.output = new PrintWriter(this.socket.getOutputStream(), true);
     }
 }
