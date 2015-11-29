@@ -3,12 +3,10 @@
 To run the client-server application:
 
 1. Compile the java files
-
 - javac Server.java
 - javac Client.java
 
 2. Run the files
-
 - java Server
 - java Client
 
