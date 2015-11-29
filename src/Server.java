@@ -41,6 +41,7 @@ public class Server
 
     public void run() throws IOException
     {
+        this.getServerHeader();
         this.listener = new ServerSocket(this.port);
         try {
             while (true) {
