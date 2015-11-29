@@ -7,5 +7,7 @@
 
 public class Server
 {
-
+    private static class Handler extends Thread {
+        
+    }
 }
