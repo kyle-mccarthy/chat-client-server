@@ -82,6 +82,11 @@ public class Server
                 while (true) {
                     // @todo get the current line and process the commands
                     this.output.println(this.input.readLine());
+
+                    // close the connection if the client sends null message
+                    if (this.input.readLine() == null) {
+                        break;
+                    }
                 }
 
             } catch (IOException e) {
