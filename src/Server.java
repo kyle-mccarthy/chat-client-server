@@ -58,6 +58,9 @@ public class Server
         try {
             server.run();
         } catch (IOException e) {
+            System.err.println("Error: Could not bind to port.  This could be the result of the server process" +
+                    " exiting abnormally when last run.  View the README file to find how to close the process " +
+                    " that is blocking the port.  The stack trace follows: \n");
             e.printStackTrace();
         }
     }
@@ -91,13 +94,13 @@ public class Server
                 this.output = new PrintWriter(this.socket.getOutputStream(), true);
 
                 while (true) {
-                    // @todo get the current line and process the commands
-                    this.output.println(this.input.readLine());
+                    // get the command that is sent to the server and then process it according to the assignment
+                    String input = this.input.readLine();
+                    System.out.println(input);
 
-                    // close the connection if the client sends null message
-                    if (this.input.readLine() == null) {
-                        break;
-                    }
+                    // @todo remove debugging
+                    // @todo process the commands from the client to the server
+                    this.output.println("OK");
                 }
 
             } catch (IOException e) {
