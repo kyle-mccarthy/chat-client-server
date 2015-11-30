@@ -77,7 +77,11 @@ public class Server {
 
     public boolean login(String username, String password) {
         String pass = this.credentials.get(username);
-        return (pass != null && pass.equals(password));
+        if (pass != null && pass.equals(password)) {
+            send("System", "all", username + " has joined the room.");
+            return true;
+        }
+        return false;
     }
 
     public boolean send(String user, String username, String message) {
@@ -201,7 +205,6 @@ public class Server {
                                 this.username = tokens[1];
                                 this.authenticated = true;
                                 this.output.println("login confirmed");
-                                System.out.println(this.username + " login");
                                 // add the users writer to the clients list
                                 clients.put(this.username, this.output);
                             } else {
