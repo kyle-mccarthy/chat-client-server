@@ -47,11 +47,7 @@ public class Client
 
         // infinite loop for processing input and output to-from the client-server application
         while (true) {
-            // print the first 3 commands sent by the server, these just contain general information about the
-            // client-server application, and directs the user to login with the application
-            for (int i = 0; i < 3; i++) {
-                System.out.println(this.input.readLine());
-            }
+            System.out.println(this.input.readLine());
 
             // wait for the command
             System.out.print("> ");

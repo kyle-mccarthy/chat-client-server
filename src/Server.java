@@ -100,8 +100,7 @@ public class Server
         /**
          * Controls the thread for a client, allows for client to input a string that is then sent to the server.
          */
-        public void run()
-        {
+        public void run() {
             try {
                 // create the BufferedReader and PrintWriter for input and output respectively
                 this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -109,10 +108,11 @@ public class Server
 
                 // when a client connects send the following instructions, the client will need to handle these
                 // and print them to the CLI at start or all the messages will be delay
-                this.output.println("My chat room client.  Version Two.");
-                this.output.println("Your client has connected to the server and has been assigned the temporary id " +
-                        "#" + this.clientID + ".");
-                this.output.println("Please execute a command or enter :h for a list of commands.");
+                String welcome = "My chat room client.  Version Two.";
+                welcome += "Your client has connected to the server and has been assigned the temporary id " +
+                        "#" + this.clientID + ".";
+                welcome += "Please execute a command or enter help for a list of commands.";
+                this.output.println(welcome);
 
                 while (true) {
                     // get the command that is sent to the server and then process it according to the assignment
@@ -122,6 +122,10 @@ public class Server
                     // @todo remove debugging
                     // @todo process the commands from the client to the server
                     this.output.println("OK");
+
+                    if (input.startsWith("help")) {
+                        this.output.println("Please view the readme for a list of commands.");
+                    }
                 }
 
             } catch (IOException e) {
