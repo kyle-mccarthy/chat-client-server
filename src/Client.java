@@ -41,32 +41,22 @@ public class Client {
     public void connect() throws IOException {
         this.socket = new Socket(this.address, this.port);
         this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-        this.output = new PrintWriter(this.socket.getOutputStream(), true);
 
         System.out.println(this.input.readLine());
 
+        // start the system in handler to get client commands
+        new Handler(this.socket).start();
+
         // infinite loop for processing input and output to-from the client-server application
         while (true) {
-            // wait for the command
-            System.out.print("> ");
-
-            // read in the command from the CLI using scanner
-            Scanner s = new Scanner(System.in);
-            String command = s.nextLine();
-
-            // send the command to the server
-            this.output.println(command);
-
-            // @todo find a cleaner solution than checking to see if we sent the logout command
-            if (command.equals("logout")) {
-                break;
-            }
-
             try {
                 // get the response
                 String response = this.input.readLine();
                 // print the response from the server
-                System.out.println(response);
+                if (response != null && response.length() > 0) {
+                    System.out.println(response);
+                    System.out.print("> ");
+                }
             } catch (IOException e) {
                 e.getStackTrace();
             }
@@ -83,6 +73,44 @@ public class Client {
             client.connect();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Hanlder thread to allow for the client to get keyboard input while listening to the server and print responses
+     * from the server
+     */
+    public class Handler extends Thread {
+        protected Socket socket;
+
+        public Handler(Socket socket) {
+            this.socket = socket;
+        }
+
+        public void run() {
+            try {
+                output = new PrintWriter(this.socket.getOutputStream(), true);
+
+                // infinite loop for getting user input
+                while (true) {
+                    // wait for the command
+                    System.out.print("> ");
+
+                    // read in the command from the CLI using scanner
+                    Scanner s = new Scanner(System.in);
+                    String command = s.nextLine();
+
+                    // send the command to the server
+                    output.println(command);
+
+                    // @todo find a cleaner solution than checking to see if we sent the logout command
+                    if (command.equals("logout")) {
+                        break;
+                    }
+                }
+            } catch (IOException e) {
+                e.getStackTrace();
+            }
         }
     }
 }
