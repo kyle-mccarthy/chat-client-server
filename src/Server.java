@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Student: Kyle McCarthy
@@ -20,7 +21,8 @@ public class Server
     protected int clientCount;
     protected int clientIDCount;
     protected int maxClients;
-    protected HashMap<String,String> users;
+    protected HashMap <String,String> credentials;
+    protected HashSet<String> users;
     protected HashMap <String,PrintWriter> clients;
 
     /**
@@ -33,8 +35,18 @@ public class Server
         this.clientCount = 0;
         this.clientIDCount = 0;
         this.maxClients = 3;
-        this.users = new HashMap<>();
+        this.users = new HashSet<>();
         this.clients = new HashMap<>();
+        this.credentials = new HashMap<>();
+        this.loadCredentials();
+    }
+
+    public void loadCredentials()
+    {
+        this.credentials.put("Tom", "Tom11");
+        this.credentials.put("David", "David22");
+        this.credentials.put("Beth", "Beth33");
+        this.credentials.put("John", "John44");
     }
 
     /**
@@ -79,7 +91,7 @@ public class Server
         }
     }
 
-    private static class Handler extends Thread
+    private class Handler extends Thread
     {
         protected Socket socket;
         protected int clientID;
@@ -117,14 +129,32 @@ public class Server
                 while (true) {
                     // get the command that is sent to the server and then process it according to the assignment
                     String input = this.input.readLine();
-                    System.out.println(input);
 
                     // @todo remove debugging
                     // @todo process the commands from the client to the server
-                    this.output.println("OK");
-
+                    // direct the user to the readme if they don't know what to do
                     if (input.startsWith("help")) {
                         this.output.println("Please view the readme for a list of commands.");
+                    } else if (input.startsWith("login")) {
+                        // attempt to login a user with the credentials passed
+                        this.output.println("@todo");
+                    } else if (input.startsWith("send all")) {
+                        // send a message to all the users connected to the server
+                        this.output.println("@todo");
+                    } else if (input.startsWith("send")) {
+                        // send a message to the user specified
+                        this.output.println("@todo");
+                    } else if (input.startsWith("who")) {
+                        // output a list of all the clients connected to the server
+                        this.output.println("@todo");
+                    } else if (input.startsWith("logout")) {
+                        // logout the client from the server
+                        // @todo make the client cleaner when logged out somehow
+                        this.output.println("Logging out...");
+                        break;
+                    } else {
+                        // catch invalid commands and direct the user to the readme
+                        this.output.println("Command not found.  View a list of possible commands in the readme.");
                     }
                 }
 
@@ -134,9 +164,9 @@ public class Server
                 // try to close the connection between handler and server
                 try {
                     this.socket.close();
-                    System.out.print("Connection with client closed.");
+                    System.out.println("Connection with client closed.");
                 } catch (IOException e) {
-                    this.output.println("Error: could not close the socket.");
+                    System.out.println("Error: exception occurred when closing the socket.  Possibly already closed?");
                 }
             }
         }

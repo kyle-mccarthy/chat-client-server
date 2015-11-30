@@ -45,10 +45,10 @@ public class Client
         this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         this.output = new PrintWriter(this.socket.getOutputStream(), true);
 
-        // infinite loop for processing input and output to-from the client-server application
-        while (true) {
-            System.out.println(this.input.readLine());
+        System.out.println(this.input.readLine());
 
+        // infinite loop for processing input and output to-from the client-server application
+        while (this.socket.isConnected()) {
             // wait for the command
             System.out.print("> ");
 
