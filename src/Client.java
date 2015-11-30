@@ -15,7 +15,6 @@ import java.util.Scanner;
 public class Client {
     protected Socket socket;
     protected int port;
-    protected String name;
     protected String address;
     protected BufferedReader input;
     protected PrintWriter output;
