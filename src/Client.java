@@ -48,7 +48,7 @@ public class Client
         System.out.println(this.input.readLine());
 
         // infinite loop for processing input and output to-from the client-server application
-        while (this.socket.isConnected()) {
+        while (true) {
             // wait for the command
             System.out.print("> ");
 
@@ -59,9 +59,15 @@ public class Client
             // send the command to the server
             this.output.println(command);
 
-            // get the response
+            // @todo find a cleaner solution than checking to see if we sent the logout command
+            if (command.equals("logout")) {
+                break;
+            }
+
             try {
+                // get the response
                 String response = this.input.readLine();
+                // print the response from the server
                 System.out.println(response);
             } catch(IOException e) {
                 e.getStackTrace();
@@ -72,7 +78,6 @@ public class Client
 
     /**
      * Run the client CLI, and use the default port defined by 1 : last 4 of student ID.
-     * @param args
      */
     public static void main (String[] args)
     {
