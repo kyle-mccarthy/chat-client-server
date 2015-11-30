@@ -22,7 +22,6 @@ public class Server {
     protected int clientIDCount;
     protected int maxClients;
     protected HashMap<String, String> credentials;
-    protected HashSet<String> users;
     protected HashMap<String, PrintWriter> clients;
 
     /**
@@ -35,7 +34,6 @@ public class Server {
         this.clientCount = 0;
         this.clientIDCount = 0;
         this.maxClients = 3;
-        this.users = new HashSet<>();
         this.clients = new HashMap<>();
         this.credentials = new HashMap<>();
         this.loadCredentials();
