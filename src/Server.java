@@ -101,7 +101,11 @@ public class Server {
     }
 
     public boolean logout(String username) {
-        return (clients.remove(username) != null);
+        if (clients.remove(username) != null) {
+            send("System", "all", username + " left the room.");
+            return true;
+        }
+        return (false);
     }
 
     /**
@@ -173,8 +177,6 @@ public class Server {
                     // tokenize the string - needed for checking the command
                     String tokens[] = input.split("\\s+");
 
-                    // @todo remove debugging
-                    // @todo process the commands from the client to the server
                     // direct the user to the readme if they don't know what to do
                     if (input.startsWith("help")) {
                         this.output.println("Please view the readme for a list of commands.");
@@ -183,6 +185,12 @@ public class Server {
                         // see if the tokens in the command are even valid
                         if (tokens.length != 3) {
                             this.output.println("Error: invalid login syntax.");
+                        } else if (clients.containsKey(tokens[1])) {
+                            this.output.println("Error: this user is already logged in.  Please quit the session in" +
+                                    " the other client to initiate a connection for this user on this client.");
+                        } else if (this.authenticated) {
+                            this.output.println("Error: you are already logged in.  Please log the user out of the current " +
+                                    "client to login as a different user.");
                         } else {
                             // attempt to login a user with the credentials passed
                             boolean status = login(tokens[1], tokens[2]);
@@ -222,6 +230,8 @@ public class Server {
                         // see if the tokens in the command are even valid
                         if (tokens.length != 1) {
                             this.output.println("Error: invalid who syntax.");
+                        } else if (!this.authenticated) {
+                            this.output.println("Denied. Please login first");
                         } else {
                             // output a list of all the clients connected to the server
                             this.output.println(clients.keySet().toString());
@@ -231,6 +241,8 @@ public class Server {
                         // see if the tokens in the command are even valid
                         if (tokens.length != 1) {
                             this.output.println("Error: invalid logout syntax.");
+                        } else if (!this.authenticated) {
+                            this.output.println("Denied. Please login first");
                         } else {
                             // logout the client from the server
                             System.out.println(this.username + " logged out");
@@ -251,6 +263,9 @@ public class Server {
                 try {
                     this.socket.close();
                     System.out.println("Connection with client closed.");
+                    // try to log the user out again just in case they exited the client using something other than
+                    // the logout command (i.e. ^C)
+                    logout(this.username);
                 } catch (IOException e) {
                     System.out.println("Error: exception occurred when closing the socket.  Possibly already closed?");
                 }
