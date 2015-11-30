@@ -75,6 +75,13 @@ public class Server {
         }
     }
 
+    /**
+     * Try to log the user in with the passed credentials.  If the attempt is successful, broadcast a message from the
+     * system to all of the users in the chat room and notify them that the particular user has joined.
+     * @param username - HashMap key - users
+     * @param password - HashMap value - users
+     * @return bool - login attempt outcome
+     */
     public boolean login(String username, String password) {
         String pass = this.credentials.get(username);
         if (pass != null && pass.equals(password)) {
@@ -84,6 +91,14 @@ public class Server {
         return false;
     }
 
+    /**
+     * Send a message from user to username with contents message.  The user can be sending to another specific user, or
+     * can be sending the message to everyone in the chat.
+     * @param user - String - sender
+     * @param username - String - receiver
+     * @param message - String - the message
+     * @return bool - send attempt status
+     */
     public boolean send(String user, String username, String message) {
         // treat case where username is all
         if (username.equals("all")) {
@@ -104,12 +119,17 @@ public class Server {
         return false;
     }
 
+    /**
+     * Try to logout a user and then if successful broadcast a message to the room notifying them that the user left.
+     * @param username - HashMap key - users
+     * @return - logout attempt status
+     */
     public boolean logout(String username) {
         if (clients.remove(username) != null) {
             send("System", "all", username + " left the room.");
             return true;
         }
-        return (false);
+        return false;
     }
 
     /**
@@ -189,9 +209,11 @@ public class Server {
                         // see if the tokens in the command are even valid
                         if (tokens.length != 3) {
                             this.output.println("Error: invalid login syntax.");
+                        // see if the user is already logged in on a different client
                         } else if (clients.containsKey(tokens[1])) {
                             this.output.println("Error: this user is already logged in.  Please quit the session in" +
                                     " the other client to initiate a connection for this user on this client.");
+                        // see if the user is trying to login twice for whatever reason
                         } else if (this.authenticated) {
                             this.output.println("Error: you are already logged in.  Please log the user out of the current " +
                                     "client to login as a different user.");
@@ -216,9 +238,12 @@ public class Server {
                         // see if the tokens in the command are even valid
                         if (tokens.length < 3) {
                             this.output.println("Error: invalid send syntax.");
+                        // make sure that the user is logged in
                         } else if (!this.authenticated) {
                             this.output.println("Denied. Please login first");
                         } else {
+                            // untokenize - leave out the command and user and get the rest of the tokens an append
+                            // them together to make the message
                             String message = "";
                             for (String part : Arrays.copyOfRange(tokens, 2, tokens.length)) {
                                 message += part + " ";
@@ -233,6 +258,7 @@ public class Server {
                         // see if the tokens in the command are even valid
                         if (tokens.length != 1) {
                             this.output.println("Error: invalid who syntax.");
+                        // make sure that the user is logged in
                         } else if (!this.authenticated) {
                             this.output.println("Denied. Please login first");
                         } else {
@@ -244,6 +270,7 @@ public class Server {
                         // see if the tokens in the command are even valid
                         if (tokens.length != 1) {
                             this.output.println("Error: invalid logout syntax.");
+                        // make sure that the user is logged in
                         } else if (!this.authenticated) {
                             this.output.println("Denied. Please login first");
                         } else {

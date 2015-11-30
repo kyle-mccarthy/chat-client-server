@@ -72,6 +72,7 @@ public class Client {
         try {
             client.connect();
         } catch (IOException e) {
+            System.out.println("Error: the connection was refused.  Is the server running?");
             e.printStackTrace();
         }
     }
@@ -80,7 +81,7 @@ public class Client {
      * Hanlder thread to allow for the client to get keyboard input while listening to the server and print responses
      * from the server
      */
-    public class Handler extends Thread {
+    private class Handler extends Thread {
         protected Socket socket;
 
         public Handler(Socket socket) {
@@ -103,7 +104,7 @@ public class Client {
                     // send the command to the server
                     output.println(command);
 
-                    // @todo find a cleaner solution than checking to see if we sent the logout command
+                    // exit gracefully
                     if (command.equals("logout")) {
                         System.exit(1);
                     }
