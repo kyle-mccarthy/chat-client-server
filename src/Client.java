@@ -105,7 +105,7 @@ public class Client {
 
                     // @todo find a cleaner solution than checking to see if we sent the logout command
                     if (command.equals("logout")) {
-                        break;
+                        System.exit(1);
                     }
                 }
             } catch (IOException e) {
