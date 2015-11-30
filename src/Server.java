@@ -92,7 +92,7 @@ public class Server {
         }
         // username not all send to user with username
         PrintWriter userStream = this.clients.get(username);
-        if (user != null) {
+        if (userStream != null) {
             System.out.println(user + " to " + username + " " + message);
             userStream.println(user + ": @" + username + " " + message);
             return true;
@@ -164,6 +164,13 @@ public class Server {
                 while (true) {
                     // get the command that is sent to the server and then process it according to the assignment
                     String input = this.input.readLine();
+
+                    // make sure that the input isn't null - this catches a bug when the client disconnects using ^C
+                    if (input == null) {
+                        break;
+                    }
+
+                    // tokenize the string - needed for checking the command
                     String tokens[] = input.split("\\s+");
 
                     // @todo remove debugging
@@ -196,15 +203,19 @@ public class Server {
 
                     } else if (input.startsWith("send")) {
                         // see if the tokens in the command are even valid
-                        if (tokens.length != 3) {
+                        if (tokens.length < 3) {
                             this.output.println("Error: invalid send syntax.");
+                        } else if (!this.authenticated) {
+                            this.output.println("Denied. Please login first");
                         } else {
-                            String message = Arrays.copyOfRange(tokens, 3, tokens.length).toString();
+                            String message = "";
+                            for (String part : Arrays.copyOfRange(tokens, 2, tokens.length)) {
+                                message += part + " ";
+                            }
                             // send a message to the user specified
                             if (!send(this.username, tokens[1], message)) {
-                                this.output.println("Error: could not broadcast.  Client not online.");
+                                this.output.println("Error: could not broadcast.  Client not online or invalid.");
                             }
-                            this.output.println(this.username + " @" + tokens[1] + " " + message);
                         }
 
                     } else if (input.startsWith("who")) {
