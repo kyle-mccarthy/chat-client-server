@@ -13,4 +13,4 @@
 
 1. Exists saying the port is in use
   - In terminal run, lsof -i:{port_number} where for this project the port number is 17388
-  - If there is a process using the port, note the PID, and then run kill {PID}
+  - If there is a process using the port, note the PID, and then run kill -9 {PID}

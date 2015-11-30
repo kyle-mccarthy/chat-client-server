@@ -21,6 +21,7 @@ public class Client
     protected BufferedReader input;
     protected PrintWriter output;
 
+
     /**
      * Create the client and set the default server address/IP to the localhost, allow for the port to be passed
      * to the client through the constructor.
@@ -32,13 +33,26 @@ public class Client
         this.address = "127.0.0.1";
     }
 
+    /**
+     * Connect the client to the server, and process the initial commands.  The client will then continue with the
+     * infinite loop that process the client commands and forwards them to the server, the loop also processes data
+     * that has been sent by the server and writes it to the CLI.
+     * @throws IOException
+     */
     public void connect() throws IOException
     {
         this.socket = new Socket(this.address, this.port);
         this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         this.output = new PrintWriter(this.socket.getOutputStream(), true);
 
+        // infinite loop for processing input and output to-from the client-server application
         while (true) {
+            // print the first 3 commands sent by the server, these just contain general information about the
+            // client-server application, and directs the user to login with the application
+            for (int i = 0; i < 3; i++) {
+                System.out.println(this.input.readLine());
+            }
+
             // wait for the command
             System.out.print("> ");
 
@@ -60,6 +74,10 @@ public class Client
         }
     }
 
+    /**
+     * Run the client CLI, and use the default port defined by 1 : last 4 of student ID.
+     * @param args
+     */
     public static void main (String[] args)
     {
         Client client = new Client(17388);
