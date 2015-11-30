@@ -1,6 +1,6 @@
 /**
  * Student: Kyle McCarthy
- * Student ID: 1807388
+ * Student ID: 18073888
  * Student Pawprint: KJMD54
  * Date: 11/23/15
  */
@@ -53,7 +53,7 @@ public class Client {
 
             // read in the command from the CLI using scanner
             Scanner s = new Scanner(System.in);
-            String command = s.next();
+            String command = s.nextLine();
 
             // send the command to the server
             this.output.println(command);
@@ -79,7 +79,7 @@ public class Client {
      * Run the client CLI, and use the default port defined by 1 : last 4 of student ID.
      */
     public static void main(String[] args) {
-        Client client = new Client(17388);
+        Client client = new Client(13888);
         try {
             client.connect();
         } catch (IOException e) {

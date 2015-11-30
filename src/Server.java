@@ -9,7 +9,7 @@ import java.util.HashSet;
 
 /**
  * Student: Kyle McCarthy
- * Student ID: 1807388
+ * Student ID: 18073888
  * Student Pawprint: KJMD54
  * Date: 11/23/15
  */
@@ -75,14 +75,13 @@ public class Server {
     }
 
     public boolean login(String username, String password) {
-        return false;
+        String pass = this.credentials.get(username);
+        return (pass != null && pass.equals(password));
     }
 
     public boolean send(String username, String message) {
-        return false;
-    }
-
-    public boolean sendAll(String message) {
+        // treat case where username is all
+        // username not all send to user with username
         return false;
     }
 
@@ -101,8 +100,9 @@ public class Server {
      * @param args
      */
     public static void main(String[] args) {
-        Server server = new Server(17388);
+        Server server = new Server(13888);
         try {
+            System.out.println("My chat room server. Version Two.");
             server.run();
         } catch (IOException e) {
             System.err.println("Error: Could not bind to port.  This could be the result of the server process" +
@@ -113,7 +113,7 @@ public class Server {
     }
 
 
-    private static class Handler extends Thread {
+    private class Handler extends Thread {
         protected Socket socket;
         protected int clientID;
         protected String username;
@@ -146,38 +146,71 @@ public class Server {
 
                 // when a client connects send the following instructions, the client will need to handle these
                 // and print them to the CLI at start or all the messages will be delay
-                String welcome = "My chat room client.  Version Two.";
-                welcome += "Your client has connected to the server and has been assigned the temporary id " +
-                        "#" + this.clientID + ".";
-                welcome += "Please execute a command or enter help for a list of commands.";
+                String welcome = "My chat room client.  Version Two. Your client has connected to the server and has" +
+                        " been assigned the temporary id  #" + this.clientID + ". Please execute a command or enter help" +
+                        " for a list of commands.";
                 this.output.println(welcome);
 
                 while (true) {
                     // get the command that is sent to the server and then process it according to the assignment
                     String input = this.input.readLine();
+                    String tokens[] = input.split("\\s+");
 
                     // @todo remove debugging
                     // @todo process the commands from the client to the server
                     // direct the user to the readme if they don't know what to do
                     if (input.startsWith("help")) {
                         this.output.println("Please view the readme for a list of commands.");
+
                     } else if (input.startsWith("login")) {
-                        // attempt to login a user with the credentials passed
-                        this.output.println("@todo");
-                    } else if (input.startsWith("send all")) {
-                        // send a message to all the users connected to the server
-                        this.output.println("@todo");
+                        // see if the tokens in the command are even valid
+                        if (tokens.length != 3) {
+                            this.output.println("Error: invalid login syntax.");
+                        } else {
+                            // attempt to login a user with the credentials passed
+                            boolean status = login(tokens[1], tokens[2]);
+
+                            // user was successfully authenticated, set the username, the authenticated variable, and notify
+                            // the client that the authentication attempt was successful
+                            if (status) {
+                                this.username = tokens[1];
+                                this.authenticated = true;
+                                this.output.println("login confirmed");
+                                System.out.println(this.username + " login");
+                            } else {
+                                this.output.println("Error: invalid login credentials");
+                            }
+                        }
+
                     } else if (input.startsWith("send")) {
-                        // send a message to the user specified
-                        this.output.println("@todo");
+                        // see if the tokens in the command are even valid
+                        if (tokens.length != 3) {
+                            this.output.println("Error: invalid send syntax.");
+                        } else {
+                            // send a message to the user specified
+                            this.output.println("@todo");
+                        }
+
                     } else if (input.startsWith("who")) {
-                        // output a list of all the clients connected to the server
-                        this.output.println("@todo");
+                        // see if the tokens in the command are even valid
+                        if (tokens.length != 1) {
+                            this.output.println("Error: invalid who syntax.");
+                        } else {
+                            // output a list of all the clients connected to the server
+                            this.output.println("@todo");
+                        }
+
                     } else if (input.startsWith("logout")) {
-                        // logout the client from the server
-                        // @todo make the client cleaner when logged out somehow
-                        this.output.println("Logging out...");
-                        break;
+                        // see if the tokens in the command are even valid
+                        if (tokens.length != 1) {
+                            this.output.println("Error: invalid logout syntax.");
+                        } else {
+                            // logout the client from the server
+                            // @todo make the client cleaner when logged out somehow
+                            this.output.println("Logging out...");
+                            break;
+                        }
+
                     } else {
                         // catch invalid commands and direct the user to the readme
                         this.output.println("Command not found.  View a list of possible commands in the readme.");
