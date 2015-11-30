@@ -100,8 +100,8 @@ public class Server {
         return false;
     }
 
-    public boolean logout() {
-        return false;
+    public boolean logout(String username) {
+        return (clients.remove(username) != null);
     }
 
     /**
@@ -187,6 +187,8 @@ public class Server {
                                 this.authenticated = true;
                                 this.output.println("login confirmed");
                                 System.out.println(this.username + " login");
+                                // add the users writer to the clients list
+                                clients.put(this.username, this.output);
                             } else {
                                 this.output.println("Error: invalid login credentials");
                             }
@@ -220,8 +222,9 @@ public class Server {
                             this.output.println("Error: invalid logout syntax.");
                         } else {
                             // logout the client from the server
-                            // @todo make the client cleaner when logged out somehow
+                            System.out.println(this.username + " logged out");
                             this.output.println("Logging out...");
+                            logout(this.username);
                             break;
                         }
 
