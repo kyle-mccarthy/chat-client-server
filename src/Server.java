@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -79,13 +80,23 @@ public class Server {
         return (pass != null && pass.equals(password));
     }
 
-    public boolean send(String username, String message) {
+    public boolean send(String user, String username, String message) {
         // treat case where username is all
+        if (username.equals("all")) {
+            // send to all the clients
+            System.out.println(user + " to all " + message);
+            for (PrintWriter clientStream : this.clients.values()) {
+                clientStream.println(user + ": " + message);
+            }
+            return true;
+        }
         // username not all send to user with username
-        return false;
-    }
-
-    public boolean who() {
+        PrintWriter userStream = this.clients.get(username);
+        if (user != null) {
+            System.out.println(user + " to " + username + " " + message);
+            userStream.println(user + ": @" + username + " " + message);
+            return true;
+        }
         return false;
     }
 
@@ -111,7 +122,6 @@ public class Server {
             e.printStackTrace();
         }
     }
-
 
     private class Handler extends Thread {
         protected Socket socket;
@@ -187,8 +197,12 @@ public class Server {
                         if (tokens.length != 3) {
                             this.output.println("Error: invalid send syntax.");
                         } else {
+                            String message = Arrays.copyOfRange(tokens, 3, tokens.length).toString();
                             // send a message to the user specified
-                            this.output.println("@todo");
+                            if (!send(this.username, tokens[1], message)) {
+                                this.output.println("Error: could not broadcast.  Client not online.");
+                            }
+                            this.output.println(this.username + " @" + tokens[1] + " " + message);
                         }
 
                     } else if (input.startsWith("who")) {
@@ -197,7 +211,7 @@ public class Server {
                             this.output.println("Error: invalid who syntax.");
                         } else {
                             // output a list of all the clients connected to the server
-                            this.output.println("@todo");
+                            this.output.println(clients.keySet().toString());
                         }
 
                     } else if (input.startsWith("logout")) {
