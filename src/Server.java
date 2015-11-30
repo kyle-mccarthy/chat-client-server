@@ -1,3 +1,10 @@
+/**
+ * Student: Kyle McCarthy
+ * Student ID: 18073888
+ * Student Pawprint: KJMD54
+ * Date: 11/23/15
+ */
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,13 +13,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
-
-/**
- * Student: Kyle McCarthy
- * Student ID: 18073888
- * Student Pawprint: KJMD54
- * Date: 11/23/15
- */
 
 public class Server {
     protected int port;
