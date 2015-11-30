@@ -14,23 +14,22 @@ import java.util.HashSet;
  * Date: 11/23/15
  */
 
-public class Server
-{
+public class Server {
     protected int port;
     protected ServerSocket listener;
     protected int clientCount;
     protected int clientIDCount;
     protected int maxClients;
-    protected HashMap <String,String> credentials;
+    protected HashMap<String, String> credentials;
     protected HashSet<String> users;
-    protected HashMap <String,PrintWriter> clients;
+    protected HashMap<String, PrintWriter> clients;
 
     /**
      * Server constructor, take in the port from the main application and set the version and reset client count.
+     *
      * @param port - int - the port that the server will run on
      */
-    public Server(int port)
-    {
+    public Server(int port) {
         this.port = port;
         this.clientCount = 0;
         this.clientIDCount = 0;
@@ -41,8 +40,10 @@ public class Server
         this.loadCredentials();
     }
 
-    public void loadCredentials()
-    {
+    /**
+     * Load the default credentials provided in the assignment...
+     */
+    public void loadCredentials() {
         this.credentials.put("Tom", "Tom11");
         this.credentials.put("David", "David22");
         this.credentials.put("Beth", "Beth33");
@@ -51,10 +52,10 @@ public class Server
 
     /**
      * Start the ServerSocket on the desired port, increment the clientCount and create the Thread to handle comms.
+     *
      * @throws IOException
      */
-    public void run() throws IOException
-    {
+    public void run() throws IOException {
         this.listener = new ServerSocket(this.port);
         try {
             // run the loop infinitely and process new clients attempting to join the channel
@@ -73,13 +74,33 @@ public class Server
         }
     }
 
+    public boolean login(String username, String password) {
+        return false;
+    }
+
+    public boolean send(String username, String message) {
+        return false;
+    }
+
+    public boolean sendAll(String message) {
+        return false;
+    }
+
+    public boolean who() {
+        return false;
+    }
+
+    public boolean logout() {
+        return false;
+    }
+
     /**
      * Try to start the server on the default port defined in the instructions.  If there is an issue try to inform the
      * user of the most likely issue and output the stack trace.
+     *
      * @param args
      */
-    public static void main (String[] args)
-    {
+    public static void main(String[] args) {
         Server server = new Server(17388);
         try {
             server.run();
@@ -91,22 +112,27 @@ public class Server
         }
     }
 
-    private class Handler extends Thread
-    {
+
+    private static class Handler extends Thread {
         protected Socket socket;
         protected int clientID;
+        protected String username;
+        protected boolean authenticated;
         protected BufferedReader input;
         protected PrintWriter output;
 
         /**
-         * Thread to handle the requests from a client application to the server.
+         * Thread to handle the requests from a client application to the server.  A handler is created from the lister
+         * loop inside the Server's run method.  A handler is only responsible for the communication of one single
+         * client and the server.
+         *
          * @param socket - Socket from the server object
-         * @param id - int - ID of the client running on the handler
+         * @param id     - int - ID of the client running on the handler
          */
-        public Handler(Socket socket, int id)
-        {
+        public Handler(Socket socket, int id) {
             this.socket = socket;
             this.clientID = id;
+            this.authenticated = false;
         }
 
         /**
@@ -157,7 +183,6 @@ public class Server
                         this.output.println("Command not found.  View a list of possible commands in the readme.");
                     }
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {

@@ -12,8 +12,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client
-{
+public class Client {
     protected Socket socket;
     protected int port;
     protected String name;
@@ -25,10 +24,10 @@ public class Client
     /**
      * Create the client and set the default server address/IP to the localhost, allow for the port to be passed
      * to the client through the constructor.
+     *
      * @param port - int - port of the socket
      */
-    public Client(int port)
-    {
+    public Client(int port) {
         this.port = port;
         this.address = "127.0.0.1";
     }
@@ -37,10 +36,10 @@ public class Client
      * Connect the client to the server, and process the initial commands.  The client will then continue with the
      * infinite loop that process the client commands and forwards them to the server, the loop also processes data
      * that has been sent by the server and writes it to the CLI.
+     *
      * @throws IOException
      */
-    public void connect() throws IOException
-    {
+    public void connect() throws IOException {
         this.socket = new Socket(this.address, this.port);
         this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         this.output = new PrintWriter(this.socket.getOutputStream(), true);
@@ -69,7 +68,7 @@ public class Client
                 String response = this.input.readLine();
                 // print the response from the server
                 System.out.println(response);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.getStackTrace();
             }
 
@@ -79,8 +78,7 @@ public class Client
     /**
      * Run the client CLI, and use the default port defined by 1 : last 4 of student ID.
      */
-    public static void main (String[] args)
-    {
+    public static void main(String[] args) {
         Client client = new Client(17388);
         try {
             client.connect();
