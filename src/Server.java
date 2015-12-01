@@ -239,9 +239,15 @@ public class Server {
                     // tokenize the string - needed for checking the command
                     String tokens[] = input.split("\\s+");
 
-                    // direct the user to the readme if they don't know what to do
+                    // direct the user to the readme if they don't know what to do - provide a list of possible commands
                     if (input.startsWith("help")) {
-                        this.output.println("Please view the readme for a list of commands.");
+                        this.output.println("Please view the readme for more detailed list of commands.");
+                        this.output.println("register {username} {password}");
+                        this.output.println("login {username} {password}");
+                        this.output.println("logout");
+                        this.output.println("send {user} {message}");
+                        this.output.println("send all {message}");
+                        this.output.println("who");
 
                     } else if (input.startsWith("login")) {
                         // see if the tokens in the command are even valid
