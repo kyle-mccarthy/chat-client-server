@@ -18,6 +18,7 @@
 **Valid Commands**
 - *help* View a list of valid commands.
 - *login UserId Password* Attempt to login as UserId with Password.
+- *register UserId Password* Attempt to register as user with username UserId and password password
 - *send all Message* Send the entire chat room a Message.
 - *send UserId Message*  Send the UserID a Message.
 - *who* View the current UserIDs connected to the server.
