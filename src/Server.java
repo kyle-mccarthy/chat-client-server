@@ -212,7 +212,9 @@ public class Server {
         }
 
         /**
-         * Controls the thread for a client, allows for client to input a string that is then sent to the server.
+         * Controls the interaction between the handler and the server.  This also handles client input validation for the
+         * specific commands that they are able to use, and has a catchall for undefined commands.  If a command is deemed
+         * valid it sends the commands to the main server instance which then attempts to execute the command.
          */
         public void run() {
             try {
