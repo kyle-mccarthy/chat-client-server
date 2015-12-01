@@ -5,10 +5,7 @@
  * Date: 11/23/15
  */
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
@@ -39,13 +36,26 @@ public class Server {
     }
 
     /**
-     * Load the default credentials provided in the assignment...
+     * Load the DB credentials from the file called database.  Nothing special just text file with users listed line
+     * by line in format username:password.  Important to note that the passwords are stored in plain text!!!
      */
     public void loadCredentials() {
-        this.credentials.put("Tom", "Tom11");
-        this.credentials.put("David", "David22");
-        this.credentials.put("Beth", "Beth33");
-        this.credentials.put("John", "John44");
+        // load the credentials from the database
+        try {
+            BufferedReader db = new BufferedReader(new FileReader("database.txt"));
+            String line;
+            // load the credentials line by line, tokenize at : which is username:password
+            while ((line = db.readLine()) != null) {
+                String tokens[] = line.split(":");
+                if (tokens.length >= 2) {
+                    this.credentials.put(tokens[0], tokens[1]);
+                }
+            }
+            db.close();
+            System.out.println("System: credentials loaded from database");
+        } catch (IOException e) {
+            System.out.println("Error: could not load user credentials due to exception.");
+        }
     }
 
     /**
@@ -58,7 +68,6 @@ public class Server {
         try {
             // run the loop infinitely and process new clients attempting to join the channel
             while (true) {
-                // @todo limit the max connections
                 this.clientCount++;
                 this.clientIDCount++;
                 new Handler(this.listener.accept(), clientIDCount).start();
@@ -128,6 +137,35 @@ public class Server {
         if (clients.remove(username) != null) {
             send("System", "all", username + " left the room.");
             return true;
+        }
+        return false;
+    }
+
+    /**
+     * Attempt to register a user to the client-server chat application.  This includes storing the user info in the database
+     * to ensure it is persistent and it also includes adding it to the HashMap that has a copy of the credentials in memory.
+     * @param username - new user username
+     * @param password - new user password
+     * @return - register attempt status
+     */
+    public boolean register(String username, String password)
+    {
+        // make sure that the username is unique
+        if (!this.credentials.containsKey(username)) {
+            // register the new user to the database
+            this.credentials.put(username, password);
+            // create the file writer
+            PrintWriter db;
+            try {
+                // try to write the user info to a database file
+                db = new PrintWriter(new BufferedWriter(new FileWriter("database.txt", true)));
+                db.println(username + ":" + password);
+                db.close();
+                System.out.println("System:" + username + " registered an account.");
+                return true;
+            } catch (IOException e) {
+                System.out.println("Error writing to database!");
+            }
         }
         return false;
     }
@@ -281,6 +319,18 @@ public class Server {
                             break;
                         }
 
+                    } else if (input.startsWith("register")) {
+                        if (tokens.length != 3) {
+                            this.output.println("Error: invalid register syntax.");
+                        } else if (this.authenticated) {
+                            this.output.println("Error: you already have an account.");
+                        } else {
+                            if (register(tokens[1], tokens[2])) {
+                                this.output.println("An account with the username " + tokens[1] + " has been created.");
+                            } else {
+                                this.output.println("Error: we couldn't register your account.  The username may already be in use.");
+                            }
+                        }
                     } else {
                         // catch invalid commands and direct the user to the readme
                         this.output.println("Command not found.  View a list of possible commands in the readme.");
