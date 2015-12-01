@@ -324,6 +324,10 @@ public class Server {
                             this.output.println("Error: invalid register syntax.");
                         } else if (this.authenticated) {
                             this.output.println("Error: you already have an account.");
+                        } else if (tokens[1].length() > 32) {
+                            this.output.println("Error: the username must be lass than 32 chars.");
+                        } else if (tokens[2].length() > 8 || tokens[2].length() < 4) {
+                            this.output.println("Error: the password must be between 4 and 8 characters long.");
                         } else {
                             if (register(tokens[1], tokens[2])) {
                                 this.output.println("An account with the username " + tokens[1] + " has been created.");
